@@ -158,7 +158,7 @@ variable "cloudwatch_logs_exports" {
 }
 
 variable "subnet_group" {
-  default = "vpc-0fc12eb95b6925947"
+  default = "delivery-subnet-group"
   type        = string
   description = "Database subnet group"
 }
