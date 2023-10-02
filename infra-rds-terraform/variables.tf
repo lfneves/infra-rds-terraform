@@ -164,7 +164,7 @@ variable "subnet_group" {
 }
 
 variable "parameter_group" {
-  default     = "default.postgres11"
+  default     = "delivery"
   type        = string
   description = "Database engine parameter group"
 }
