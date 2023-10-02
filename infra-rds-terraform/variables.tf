@@ -202,16 +202,19 @@ variable "alarm_cpu_credit_balance_threshold" {
 }
 
 variable "alarm_actions" {
+  default     = ""
   type        = list
   description = "List of ARNs to be notified via CloudWatch when alarm enters ALARM state"
 }
 
 variable "ok_actions" {
+  default     = ""
   type        = list
   description = "List of ARNs to be notified via CloudWatch when alarm enters OK state"
 }
 
 variable "insufficient_data_actions" {
+  default     = ""
   type        = list
   description = "List of ARNs to be notified via CloudWatch when alarm enters INSUFFICIENT_DATA state"
 }
