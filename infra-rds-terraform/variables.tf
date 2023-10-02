@@ -158,6 +158,7 @@ variable "cloudwatch_logs_exports" {
 }
 
 variable "subnet_group" {
+  default = "us-east-1"
   type        = string
   description = "Database subnet group"
 }
