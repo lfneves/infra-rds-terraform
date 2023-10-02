@@ -23,17 +23,17 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform Init
-        working-directory: infra-eks-terraform/
+        working-directory: infra-rds-terraform/
         run: terraform init
         
       - name: Terraform Format
-        working-directory: infra-eks-terraform/
+        working-directory: infra-rds-terraform/
         run: terraform fmt
 
       - name: Terraform Plan
-        working-directory: infra-eks-terraform/
+        working-directory: infra-rds-terraform/
         run: terraform plan -input=false
 
       - name: Terraform Apply
-        working-directory: infra-eks-terraform/
+        working-directory: infra-rds-terraform/
         run: terraform apply -auto-approve
