@@ -5,7 +5,7 @@ variable "project" {
 }
 
 variable "environment" {
-  default     = "delivery-mvp"
+  default     = "delivery-mvp-098-"
   type        = string
   description = "Name of environment this VPC is targeting"
 }
