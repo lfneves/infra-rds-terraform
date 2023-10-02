@@ -65,11 +65,14 @@ variable "database_name" {
 }
 
 variable "database_username" {
+  default = "postgresdb"
   type        = string
   description = "Name of user inside storage engine"
 }
 
+#Teste use
 variable "database_password" {
+  default = "postgres"
   type        = string
   description = "Database password inside storage engine"
 }
