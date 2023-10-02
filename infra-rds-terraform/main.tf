@@ -52,7 +52,7 @@ resource "aws_db_instance" "postgresql" {
   instance_class                  = var.instance_type
   storage_type                    = var.storage_type
   iops                            = var.iops
-  name                            = "postgresdb"
+#   name                            = "postgresdb"
   password                        = var.database_password
   username                        = var.database_username
   backup_retention_period         = var.backup_retention_period
