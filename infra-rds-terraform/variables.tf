@@ -41,11 +41,13 @@ variable "iops" {
 }
 
 variable "vpc_id" {
+  default = "vpc-0fc12eb95b6925947"
   type        = string
   description = "ID of VPC meant to house database"
 }
 
 variable "database_identifier" {
+  default = "postgresdb"
   type        = string
   description = "Identifier for RDS instance"
 }
