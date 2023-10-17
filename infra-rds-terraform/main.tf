@@ -43,15 +43,28 @@ resource "aws_security_group" "postgresql" {
 #
 # RDS resources
 #
-resource "aws_db_parameter_group" "delivery" {
-  name   = "delivery"
-  family = "postgres15"
+# resource "aws_db_parameter_group" "delivery" {
+#   name   = "delivery"
+#   family = "postgres15"
 
-  parameter {
-    name  = "log_connections"
-    value = "1"
-  }
+#   parameter {
+#     name  = "log_connections"
+#     value = "1"
+#   }
+# }
+
+
+resource "aws_db_option_group_option" "disable_ssl" {
+  name = "disable_ssl"
+  option_name       = "rds.force_ssl"
+  option_settings   = [
+    {
+      name  = "rds.force_ssl"
+      value = "0"
+    }
+  ]
 }
+
 
 resource "aws_db_instance" "postgresql" {
   allocated_storage               = var.allocated_storage
@@ -81,6 +94,7 @@ resource "aws_db_instance" "postgresql" {
   monitoring_role_arn             = var.monitoring_interval > 0 ? aws_iam_role.enhanced_monitoring.arn : ""
   deletion_protection             = var.deletion_protection
   enabled_cloudwatch_logs_exports = var.cloudwatch_logs_exports
+  option_group_name               = aws_db_option_group_option.name
 
   tags = merge(
     {
