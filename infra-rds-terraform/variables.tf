@@ -5,7 +5,7 @@ variable "project" {
 }
 
 variable "environment" {
-  default     = "delivery-mvp-098-"
+  default     = "delivery"
   type        = string
   description = "Name of environment this VPC is targeting"
 }
@@ -65,7 +65,7 @@ variable "database_name" {
 }
 
 variable "database_username" {
-  default = "postgresdb"
+  default = "postgres"
   type        = string
   description = "Name of user inside storage engine"
 }

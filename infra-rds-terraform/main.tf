@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "enhanced_monitoring" {
 }
 
 resource "aws_iam_role" "enhanced_monitoring" {
-  name               = "rds-${var.environment}-EnhancedMonitoringRole"
+  name               = "rds-${var.environment}-role"
   assume_role_policy = data.aws_iam_policy_document.enhanced_monitoring.json
 }
 
