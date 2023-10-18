@@ -165,6 +165,9 @@ resource "aws_db_subnet_group" "sg" {
   }
 }
 
+locals {
+  monitoring_role_arn = var.monitoring_interval > 0 ? aws_iam_role.enhanced_monitoring[0].arn : ""
+}
 
 # RDS instance
 resource "aws_db_instance" "postgresql" {
@@ -193,7 +196,7 @@ resource "aws_db_instance" "postgresql" {
   parameter_group_name            = var.parameter_group
   storage_encrypted               = var.storage_encrypted
   monitoring_interval             = var.monitoring_interval
-  monitoring_role_arn             = var.monitoring_interval > 0 ? aws_iam_role.enhanced_monitoring[count.index].arn : ""
+  monitoring_role_arn             = local.monitoring_role_arn
   deletion_protection             = var.deletion_protection
   enabled_cloudwatch_logs_exports = var.cloudwatch_logs_exports
 
