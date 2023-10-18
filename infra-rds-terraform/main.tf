@@ -17,6 +17,9 @@ data "aws_iam_policy_document" "enhanced_monitoring" {
 resource "aws_iam_role" "enhanced_monitoring" {
   name               = "rds-${var.environment}-role"
   assume_role_policy = data.aws_iam_policy_document.enhanced_monitoring.json
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
@@ -241,6 +244,6 @@ resource "aws_subnet" "public" {
   }
 
   lifecycle {
-    ignore_changes = [tags]
+    ignore_changes = all
   }
 }
