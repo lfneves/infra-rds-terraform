@@ -185,7 +185,7 @@ resource "aws_db_instance" "postgresql" {
   copy_tags_to_snapshot           = var.copy_tags_to_snapshot
   multi_az                        = var.multi_availability_zone
   port                            = var.database_port
-  vpc_security_group_ids          = [aws_security_group.sg.id]
+  vpc_security_group_ids          = [aws_security_group.sg.id, aws_vpc.main.id]
   db_subnet_group_name            = aws_db_subnet_group.sg.id
   parameter_group_name            = var.parameter_group
   storage_encrypted               = var.storage_encrypted
