@@ -14,44 +14,44 @@ data "aws_iam_policy_document" "enhanced_monitoring" {
   }
 }
 
-# resource "aws_iam_role" "enhanced_monitoring" {
-#   name               = "rds-${var.environment}-role"
-#   assume_role_policy = data.aws_iam_policy_document.enhanced_monitoring.json
-# }
+resource "aws_iam_role" "enhanced_monitoring" {
+  name               = "rds-${var.environment}-role"
+  assume_role_policy = data.aws_iam_policy_document.enhanced_monitoring.json
+}
 
 resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
   role       = aws_iam_role.enhanced_monitoring.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
 
-#
-# Security group resources
-#
-resource "aws_security_group" "postgresql" {
-  vpc_id = var.vpc_id
+# #
+# # Security group resources
+# #
+# resource "aws_security_group" "postgresql" {
+#   vpc_id = var.vpc_id
 
-  tags = merge(
-    {
-      Name        = "sgDatabaseServer",
-      Project     = var.project,
-      Environment = var.environment
-    },
-    var.tags
-  )
-}
+#   tags = merge(
+#     {
+#       Name        = "sgDatabaseServer",
+#       Project     = var.project,
+#       Environment = var.environment
+#     },
+#     var.tags
+#   )
+# }
 
-#
-# RDS resources
-#
-resource "aws_db_parameter_group" "delivery" {
-  name   = "delivery"
-  family = "postgres15"
+# #
+# # RDS resources
+# #
+# resource "aws_db_parameter_group" "delivery" {
+#   name   = "delivery"
+#   family = "postgres15"
 
-  parameter {
-    name  = "log_connections"
-    value = "1"
-  }
-}
+#   parameter {
+#     name  = "log_connections"
+#     value = "1"
+#   }
+# }
 
 
 resource "aws_db_option_group_option" "disable_ssl" {
@@ -66,9 +66,11 @@ resource "aws_db_option_group_option" "disable_ssl" {
 }
 
 
+# RDS instance
 resource "aws_db_instance" "postgresql" {
   allocated_storage               = var.allocated_storage
   engine                          = "postgres"
+  db_name                         = "postgresdb"
   engine_version                  = var.engine_version
   identifier                      = var.database_identifier
   snapshot_identifier             = var.snapshot_identifier
@@ -86,8 +88,8 @@ resource "aws_db_instance" "postgresql" {
   copy_tags_to_snapshot           = var.copy_tags_to_snapshot
   multi_az                        = var.multi_availability_zone
   port                            = var.database_port
-  vpc_security_group_ids          = [aws_security_group.postgresql.id]
-  db_subnet_group_name            = var.subnet_group
+  vpc_security_group_ids          = [aws_security_group.sg.id]
+  db_subnet_group_name            = aws_db_subnet_group.sg.id
   parameter_group_name            = var.parameter_group
   storage_encrypted               = var.storage_encrypted
   monitoring_interval             = var.monitoring_interval
@@ -104,4 +106,98 @@ resource "aws_db_instance" "postgresql" {
     },
     var.tags
   )
+}
+
+
+# RDS DB SECURITY GROUP
+resource "aws_security_group" "sg" {
+  name        = "postgresql-${var.environment}"
+  description = "Allow EKS inbound/outbound traffic"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port       = var.database_port
+    to_port         = var.database_port
+    protocol        = "tcp"
+    security_groups = [aws_security_group.rds_access.id]
+  }
+
+  ingress {
+    from_port       = var.database_port
+    to_port         = var.database_port
+    protocol        = "tcp"
+    cidr_blocks = [aws_subnet.private["private-rds-1"].cidr_block]  
+  }
+
+  ingress {
+    from_port       = var.database_port
+    to_port         = var.database_port
+    protocol        = "tcp"
+    cidr_blocks = [aws_subnet.private["private-rds-2"].cidr_block]  
+  }
+  
+  ingress {
+    from_port       = var.database_port
+    to_port         = var.database_port
+    protocol        = "tcp"
+    cidr_blocks = [aws_subnet.public["public-rds-1"].cidr_block]  
+  }
+
+  ingress {
+    from_port       = var.database_port
+    to_port         = var.database_port
+    protocol        = "tcp"
+    cidr_blocks = [aws_subnet.public["public-rds-2"].cidr_block]  
+  }
+
+  egress {
+    from_port       = 1025
+    to_port         = 65535
+    protocol        = "tcp"
+    security_groups = [aws_security_group.rds_access.id]
+  }
+
+  egress {
+    from_port       = 0
+    to_port         = 65535
+    protocol        = "tcp"
+    cidr_blocks = [aws_subnet.private["private-rds-1"].cidr_block]  
+  }
+
+  egress {
+    from_port       = 0
+    to_port         = 65535
+    protocol        = "tcp"
+    cidr_blocks = [aws_subnet.private["private-rds-2"].cidr_block]  
+  }
+
+  egress {
+    from_port       = var.database_port
+    to_port         = var.database_port
+    protocol        = "tcp"
+    cidr_blocks = [aws_subnet.public["public-rds-1"].cidr_block]  
+  }
+
+  egress {
+    from_port       = var.database_port
+    to_port         = var.database_port
+    protocol        = "tcp"
+    cidr_blocks = [aws_subnet.public["public-rds-2"].cidr_block]  
+  }
+
+  tags = {
+    Name        = "postgresql-${var.environment}"
+    Environment = var.environment
+  }
+}
+
+# RDS DB SUBNET GROUP
+resource "aws_db_subnet_group" "sg" {
+  name       = "postgresql-${var.environment}"
+  subnet_ids = [aws_subnet.private["private-rds-1"].id, aws_subnet.private["private-rds-2"].id]
+
+  tags = {
+    Environment = var.environment
+    Name        = "postgresql-${var.environment}"
+  }
 }
