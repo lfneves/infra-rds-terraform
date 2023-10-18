@@ -153,6 +153,16 @@ resource "aws_security_group" "sg" {
   }
 }
 
+resource "null_resource" "delete_sg" {
+  triggers = {
+    security_group_id = aws_security_group.sg.id
+  }
+
+  provisioner "local-exec" {
+    command = "aws ec2 delete-security-group --group-id=${aws_security_group.sg.id}"
+  }
+}
+
 # RDS DB SUBNET GROUP
 resource "aws_db_subnet_group" "sg" {
   name       = "postgresql-${var.environment}"
