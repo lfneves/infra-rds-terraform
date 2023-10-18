@@ -140,6 +140,10 @@ resource "aws_security_group" "sg" {
     Name        = "postgresql-${var.environment}"
     Environment = var.environment
   }
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 # RDS DB SUBNET GROUP
@@ -150,6 +154,9 @@ resource "aws_db_subnet_group" "sg" {
   tags = {
     Environment = var.environment
     Name        = "postgresql-${var.environment}"
+  }
+  lifecycle {
+    ignore_changes = all
   }
 }
 
