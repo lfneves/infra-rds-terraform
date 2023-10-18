@@ -79,91 +79,91 @@ resource "aws_default_security_group" "default" {
 
 
 # RDS DB SECURITY GROUP
-resource "aws_security_group" "sg" {
-  name        = "postgresql-delivery"
-  description = "Allow EKS inbound/outbound traffic"
-  vpc_id      = var.vpc_id
+# resource "aws_security_group" "sg" {
+#   name        = "postgresql-delivery"
+#   description = "Allow EKS inbound/outbound traffic"
+#   vpc_id      = var.vpc_id
 
-  ingress {
-    from_port       = var.database_port
-    to_port         = var.database_port
-    protocol        = "tcp"
-    cidr_blocks = [aws_subnet.private["private-rds-1"].cidr_block]  
-  }
+#   ingress {
+#     from_port       = var.database_port
+#     to_port         = var.database_port
+#     protocol        = "tcp"
+#     cidr_blocks = [aws_subnet.private["private-rds-1"].cidr_block]  
+#   }
 
-  ingress {
-    from_port       = var.database_port
-    to_port         = var.database_port
-    protocol        = "tcp"
-    cidr_blocks = [aws_subnet.private["private-rds-2"].cidr_block]  
-  }
+#   ingress {
+#     from_port       = var.database_port
+#     to_port         = var.database_port
+#     protocol        = "tcp"
+#     cidr_blocks = [aws_subnet.private["private-rds-2"].cidr_block]  
+#   }
   
-  ingress {
-    from_port       = var.database_port
-    to_port         = var.database_port
-    protocol        = "tcp"
-    cidr_blocks = [aws_subnet.public["public-rds-1"].cidr_block]  
-  }
+#   ingress {
+#     from_port       = var.database_port
+#     to_port         = var.database_port
+#     protocol        = "tcp"
+#     cidr_blocks = [aws_subnet.public["public-rds-1"].cidr_block]  
+#   }
 
-  ingress {
-    from_port       = var.database_port
-    to_port         = var.database_port
-    protocol        = "tcp"
-    cidr_blocks = [aws_subnet.public["public-rds-2"].cidr_block]  
-  }
+#   ingress {
+#     from_port       = var.database_port
+#     to_port         = var.database_port
+#     protocol        = "tcp"
+#     cidr_blocks = [aws_subnet.public["public-rds-2"].cidr_block]  
+#   }
 
-  egress {
-    from_port       = 0
-    to_port         = 65535
-    protocol        = "tcp"
-    cidr_blocks = [aws_subnet.private["private-rds-1"].cidr_block]  
-  }
+#   egress {
+#     from_port       = 0
+#     to_port         = 65535
+#     protocol        = "tcp"
+#     cidr_blocks = [aws_subnet.private["private-rds-1"].cidr_block]  
+#   }
 
-  egress {
-    from_port       = 0
-    to_port         = 65535
-    protocol        = "tcp"
-    cidr_blocks = [aws_subnet.private["private-rds-2"].cidr_block]  
-  }
+#   egress {
+#     from_port       = 0
+#     to_port         = 65535
+#     protocol        = "tcp"
+#     cidr_blocks = [aws_subnet.private["private-rds-2"].cidr_block]  
+#   }
 
-  egress {
-    from_port       = var.database_port
-    to_port         = var.database_port
-    protocol        = "tcp"
-    cidr_blocks = [aws_subnet.public["public-rds-1"].cidr_block]  
-  }
+#   egress {
+#     from_port       = var.database_port
+#     to_port         = var.database_port
+#     protocol        = "tcp"
+#     cidr_blocks = [aws_subnet.public["public-rds-1"].cidr_block]  
+#   }
 
-  egress {
-    from_port       = var.database_port
-    to_port         = var.database_port
-    protocol        = "tcp"
-    cidr_blocks = [aws_subnet.public["public-rds-2"].cidr_block]  
-  }
+#   egress {
+#     from_port       = var.database_port
+#     to_port         = var.database_port
+#     protocol        = "tcp"
+#     cidr_blocks = [aws_subnet.public["public-rds-2"].cidr_block]  
+#   }
 
-  tags = {
-    Name        = "postgresql-${var.environment}"
-    Environment = var.environment
-  }
+#   tags = {
+#     Name        = "postgresql-${var.environment}"
+#     Environment = var.environment
+#   }
 
-  lifecycle {
-    ignore_changes = all
-  }
-}
+#   lifecycle {
+#     ignore_changes = all
+#   }
+# }
 
 # RDS DB SUBNET GROUP
-resource "aws_db_subnet_group" "sg" {
-  name       = "postgresql-${var.environment}"
-  subnet_ids = [aws_subnet.private["private-rds-1"].id, aws_subnet.private["private-rds-2"].id]
+# resource "aws_db_subnet_group" "sg" {
+#   name       = "postgresql-${var.environment}"
+#   subnet_ids = [aws_subnet.private["private-rds-1"].id, aws_subnet.private["private-rds-2"].id]
 
-  tags = {
-    Environment = var.environment
-    Name        = "postgresql-${var.environment}"
-  }
+#   tags = {
+#     Environment = var.environment
+#     Name        = "postgresql-${var.environment}"
+#   }
 
-  lifecycle {
-    ignore_changes = [tags]
-  }
-}
+#   lifecycle {
+#     ignore_changes = [tags]
+#   }
+# }
 
 # RDS instance
 resource "aws_db_instance" "postgresql" {
