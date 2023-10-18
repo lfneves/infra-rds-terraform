@@ -57,10 +57,30 @@ resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
 #   }
 # }
 
+resource "aws_vpc" "main" {
+  cidr_block           = var.vpc_cidr_block
+  instance_tenancy     = "default"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Environment = var.environment
+    Name = "main-${var.environment}"
+  }
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+resource "aws_default_security_group" "default" {
+    vpc_id = aws_vpc.main.id
+}
+
 
 # RDS DB SECURITY GROUP
 resource "aws_security_group" "sg" {
-  name        = "postgresql-${var.environment}"
+  name        = "postgresql-delivery"
   description = "Allow EKS inbound/outbound traffic"
   vpc_id      = var.vpc_id
 
@@ -122,6 +142,7 @@ resource "aws_security_group" "sg" {
 
   tags = {
     Name        = "postgresql-${var.environment}"
+    Environment = var.environment
   }
 
   lifecycle {
@@ -135,6 +156,7 @@ resource "aws_db_subnet_group" "sg" {
   subnet_ids = [aws_subnet.private["private-rds-1"].id, aws_subnet.private["private-rds-2"].id]
 
   tags = {
+    Environment = var.environment
     Name        = "postgresql-${var.environment}"
   }
 
@@ -182,4 +204,47 @@ resource "aws_db_instance" "postgresql" {
     },
     var.tags
   )
+}
+
+# RDS subnet
+resource "aws_subnet" "private" {
+  for_each = {
+    for subnet in local.private_nested_config : "${subnet.name}" => subnet
+  }
+
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = each.value.cidr_block
+  availability_zone       = each.value.az
+  map_public_ip_on_launch = false
+
+  tags = {
+    Environment = var.environment
+    Name        = "${each.value.name}-${var.environment}"
+    "kubernetes.io/role/internal-elb" = each.value.eks ? "1" : ""
+  }
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+resource "aws_subnet" "public" {
+  for_each = {
+    for subnet in local.public_nested_config : "${subnet.name}" => subnet
+  }
+
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = each.value.cidr_block
+  availability_zone       = each.value.az
+  map_public_ip_on_launch = true
+
+  tags = {
+    Environment = var.environment
+    Name        = "${each.value.name}-${var.environment}"
+    "kubernetes.io/role/elb" = each.value.eks ? "1" : ""
+  }
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
