@@ -149,7 +149,7 @@ resource "aws_security_group" "sg" {
   )
 
   lifecycle {
-    ignore_changes = all
+    create_before_destroy = true
   }
 }
 
