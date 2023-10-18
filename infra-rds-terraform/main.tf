@@ -53,16 +53,24 @@ resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
 #   }
 # }
 
+resource "aws_vpc" "main" {
+  cidr_block           = var.vpc_cidr_block
+  instance_tenancy     = "default"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 
-resource "aws_db_option_group_option" "disable_ssl" {
-  name = "disable_ssl"
-  option_name       = "rds.force_ssl"
-  option_settings   = [
-    {
-      name  = "rds.force_ssl"
-      value = "0"
-    }
-  ]
+  tags = {
+    Environment = var.environment
+    Name = "main-${var.environment}"
+  }
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+resource "aws_default_security_group" "default" {
+    vpc_id = aws_vpc.main.id
 }
 
 
@@ -96,7 +104,6 @@ resource "aws_db_instance" "postgresql" {
   monitoring_role_arn             = var.monitoring_interval > 0 ? aws_iam_role.enhanced_monitoring.arn : ""
   deletion_protection             = var.deletion_protection
   enabled_cloudwatch_logs_exports = var.cloudwatch_logs_exports
-  option_group_name               = aws_db_option_group_option.name
 
   tags = merge(
     {
