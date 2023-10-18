@@ -166,7 +166,7 @@ resource "aws_db_subnet_group" "sg" {
 }
 
 locals {
-  monitoring_role_arn = var.monitoring_interval > 0 ? aws_iam_role.enhanced_monitoring[0].arn : ""
+  monitoring_role_arn = var.monitoring_interval > 0 ? aws_iam_role.enhanced_monitoring[count.index].arn : ""
 }
 
 # RDS instance
