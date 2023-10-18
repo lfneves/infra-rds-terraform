@@ -74,7 +74,7 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_default_security_group" "default" {
-    vpc_id = aws_vpc.main.id
+    vpc_id = var.vpc_id
 }
 
 
@@ -228,7 +228,7 @@ resource "aws_subnet" "private" {
     for subnet in local.private_nested_config : "${subnet.name}" => subnet
   }
 
-  vpc_id                  = aws_vpc.main.id
+  vpc_id                  = var.vpc_id
   cidr_block              = each.value.cidr_block
   availability_zone       = each.value.az
   map_public_ip_on_launch = false
@@ -249,7 +249,7 @@ resource "aws_subnet" "public" {
     for subnet in local.public_nested_config : "${subnet.name}" => subnet
   }
 
-  vpc_id                  = aws_vpc.main.id
+  vpc_id                  = var.vpc_id
   cidr_block              = each.value.cidr_block
   availability_zone       = each.value.az
   map_public_ip_on_launch = true
