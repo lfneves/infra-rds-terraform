@@ -18,7 +18,4 @@ Before you begin, ensure you have the following prerequisites:
    git clone https://github.com/lfneves/infra-rds-terraform.git
    ```
 
-region             = "us-east-1"
-db_instance_name   = "postgresdb"
-db_engine          = "postgres"
-db_instance_class  = "db.t3.micro"
+---

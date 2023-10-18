@@ -43,15 +43,15 @@ resource "aws_security_group" "postgresql" {
 #
 # RDS resources
 #
-# resource "aws_db_parameter_group" "delivery" {
-#   name   = "delivery"
-#   family = "postgres15"
+resource "aws_db_parameter_group" "delivery" {
+  name   = "delivery"
+  family = "postgres15"
 
-#   parameter {
-#     name  = "log_connections"
-#     value = "1"
-#   }
-# }
+  parameter {
+    name  = "log_connections"
+    value = "1"
+  }
+}
 
 
 resource "aws_db_option_group_option" "disable_ssl" {
