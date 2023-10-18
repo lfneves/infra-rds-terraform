@@ -15,15 +15,16 @@ data "aws_iam_policy_document" "enhanced_monitoring" {
 }
 
 resource "aws_iam_role" "enhanced_monitoring" {
-  name               = "rds-${var.environment}-role"
+  count = var.create_iam_role ? 1 : 0  # Use a variable to conditionally create the role
+
+  name = "rds-delivery-role"
   assume_role_policy = data.aws_iam_policy_document.enhanced_monitoring.json
-  lifecycle {
-    ignore_changes = all
-  }
 }
 
 resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
-  role       = aws_iam_role.enhanced_monitoring.name
+  count = aws_iam_role.enhanced_monitoring[*].name != "" ? 1 : 0
+
+  role       = aws_iam_role.enhanced_monitoring[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
 
@@ -151,15 +152,16 @@ resource "aws_security_group" "sg" {
 
 # RDS DB SUBNET GROUP
 resource "aws_db_subnet_group" "sg" {
-  name       = "postgresql-delivery"
+  name       = "postgresql-${var.environment}"
   subnet_ids = [aws_subnet.private["private-rds-1"].id, aws_subnet.private["private-rds-2"].id]
 
   tags = {
     Environment = var.environment
     Name        = "postgresql-${var.environment}"
   }
+
   lifecycle {
-    ignore_changes = all
+    ignore_changes = [tags]
   }
 }
 
