@@ -247,3 +247,67 @@ variable "private_network_config" {
     }
   }
 }
+
+locals {
+    private_nested_config = flatten([
+        for name, config in var.private_network_config : [
+            {
+                name                     = name
+                cidr_block               = config.cidr_block
+                az                       = config.az
+                associated_public_subnet = config.associated_public_subnet
+                eks                      = config.eks
+            }
+        ]
+    ])
+}
+
+variable "public_network_config" {
+  type = map(object({
+      cidr_block              = string
+      az                      = string
+      nat_gw                  = bool
+      eks                     = bool
+  }))
+
+  default = {
+    "public-eks-1" = {
+        cidr_block = "10.0.6.0/23"
+        az = "us-east-1a"
+        nat_gw = true
+        eks = true
+    },
+    "public-eks-2" = {
+        cidr_block = "10.0.8.0/23"
+        az = "us-east-1b"
+        nat_gw = true
+        eks = true
+    },
+    "public-rds-1" = {
+        cidr_block = "10.0.10.0/24"
+        az = "us-east-1a"
+        nat_gw = false
+        eks = false
+    },
+    "public-rds-2" = {
+        cidr_block = "10.0.11.0/24"
+        az = "us-east-1b"
+        nat_gw = false
+        eks = false
+    }
+  }
+}
+
+locals {
+    public_nested_config = flatten([
+        for name, config in var.public_network_config : [
+            {
+                name                    = name
+                cidr_block              = config.cidr_block
+                az                      = config.az
+                nat_gw                  = config.nat_gw
+                eks                     = config.eks
+            }
+        ]
+    ])
+}
