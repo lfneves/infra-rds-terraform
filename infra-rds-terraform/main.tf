@@ -76,7 +76,7 @@ resource "aws_default_security_group" "default" {
 
 # RDS DB SECURITY GROUP
 resource "aws_security_group" "sg" {
-  name        = "postgresql-${var.environment}"
+  name        = "postgresql-delivery"
   description = "Allow EKS inbound/outbound traffic"
   vpc_id      = var.vpc_id
 
@@ -144,7 +144,7 @@ resource "aws_security_group" "sg" {
 
 # RDS DB SUBNET GROUP
 resource "aws_db_subnet_group" "sg" {
-  name       = "postgresql-${var.environment}"
+  name       = "postgresql-delivery"
   subnet_ids = [aws_subnet.private["private-rds-1"].id, aws_subnet.private["private-rds-2"].id]
 
   tags = {
