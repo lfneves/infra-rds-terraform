@@ -22,7 +22,7 @@ resource "aws_iam_role" "enhanced_monitoring" {
 }
 
 resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
-  count = aws_iam_role.enhanced_monitoring[*].name != "" ? 1 : 0
+  count = var.create_iam_role ? 1 : 0
 
   role       = aws_iam_role.enhanced_monitoring[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
@@ -165,10 +165,6 @@ resource "aws_db_subnet_group" "sg" {
   }
 }
 
-locals {
-  monitoring_role_arn = var.monitoring_interval > 0 ? aws_iam_role.enhanced_monitoring[0].arn : ""
-}
-
 # RDS instance
 resource "aws_db_instance" "postgresql" {
   allocated_storage               = var.allocated_storage
@@ -195,7 +191,7 @@ resource "aws_db_instance" "postgresql" {
   db_subnet_group_name            = aws_db_subnet_group.sg.id
   parameter_group_name            = var.parameter_group
   storage_encrypted               = var.storage_encrypted
-  monitoring_interval             = var.monitoring_interval
+  monitoring_interval             = var.create_iam_role ? aws_iam_role.enhanced_monitoring[0].arn : ""
   monitoring_role_arn             = local.monitoring_role_arn
   deletion_protection             = var.deletion_protection
   enabled_cloudwatch_logs_exports = var.cloudwatch_logs_exports
