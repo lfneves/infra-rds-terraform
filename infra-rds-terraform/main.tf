@@ -191,8 +191,8 @@ resource "aws_db_instance" "postgresql" {
   db_subnet_group_name            = aws_db_subnet_group.sg.id
   parameter_group_name            = var.parameter_group
   storage_encrypted               = var.storage_encrypted
-  monitoring_interval             = var.create_iam_role ? aws_iam_role.enhanced_monitoring[0].arn : ""
-  monitoring_role_arn             = local.monitoring_role_arn
+  monitoring_interval             = var.monitoring_interval
+  monitoring_role_arn             = var.create_iam_role ? aws_iam_role.enhanced_monitoring[0].arn : ""
   deletion_protection             = var.deletion_protection
   enabled_cloudwatch_logs_exports = var.cloudwatch_logs_exports
 
