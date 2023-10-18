@@ -140,10 +140,13 @@ resource "aws_security_group" "sg" {
     cidr_blocks = [aws_subnet.public["public-rds-2"].cidr_block]  
   }
 
-  tags = {
-    Name        = "postgresql-${var.environment}"
-    Environment = var.environment
-  }
+  tags = merge(
+    {
+      Name        = "postgresql-${var.environment}"
+      Environment = var.environment
+    },
+    var.tags
+  )
 
   lifecycle {
     ignore_changes = all
@@ -155,10 +158,13 @@ resource "aws_db_subnet_group" "sg" {
   name       = "postgresql-${var.environment}"
   subnet_ids = [aws_subnet.private["private-rds-1"].id, aws_subnet.private["private-rds-2"].id]
 
-  tags = {
-    Environment = var.environment
-    Name        = "postgresql-${var.environment}"
-  }
+  tags = merge(
+    {
+      Environment = var.environment
+      Name        = "postgresql-${var.environment}"
+    },
+    var.tags
+  )
 
   lifecycle {
     ignore_changes = [tags]
