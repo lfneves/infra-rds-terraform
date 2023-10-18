@@ -84,13 +84,6 @@ resource "aws_security_group" "sg" {
     from_port       = var.database_port
     to_port         = var.database_port
     protocol        = "tcp"
-    security_groups = [aws_security_group.sg.id]
-  }
-
-  ingress {
-    from_port       = var.database_port
-    to_port         = var.database_port
-    protocol        = "tcp"
     cidr_blocks = [aws_subnet.private["private-rds-1"].cidr_block]  
   }
 
@@ -113,13 +106,6 @@ resource "aws_security_group" "sg" {
     to_port         = var.database_port
     protocol        = "tcp"
     cidr_blocks = [aws_subnet.public["public-rds-2"].cidr_block]  
-  }
-
-  egress {
-    from_port       = 1025
-    to_port         = 65535
-    protocol        = "tcp"
-    security_groups = [aws_security_group.sg.id]
   }
 
   egress {
