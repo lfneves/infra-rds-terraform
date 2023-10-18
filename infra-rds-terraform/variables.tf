@@ -41,6 +41,7 @@ variable "iops" {
 }
 
 variable "vpc_id" {
+  default = "vpc-02e5c6ca571dbe532"
   type        = string
   description = "ID of VPC meant to house database"
 }
