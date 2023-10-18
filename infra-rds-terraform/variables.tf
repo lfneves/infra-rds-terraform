@@ -114,6 +114,12 @@ variable "auto_minor_version_upgrade" {
   description = "Minor engine upgrades are applied automatically to the DB instance during the maintenance window"
 }
 
+variable "create_iam_role" {
+  default     = false
+  type        = bool
+  description = "Minor engine upgrades are applied automatically to the DB instance during the maintenance window"
+}
+
 variable "final_snapshot_identifier" {
   default     = "terraform-aws-postgresql-rds-snapshot"
   type        = string
