@@ -72,7 +72,7 @@ resource "aws_db_instance" "postgresql" {
   engine                          = "postgres"
   db_name                         = "postgresdb"
   engine_version                  = var.engine_version
-  identifier                      = var.database_identifier
+  identifier                      = "postgresql-${var.environment}"
   snapshot_identifier             = var.snapshot_identifier
   instance_class                  = var.instance_type
   storage_type                    = var.storage_type
@@ -113,7 +113,7 @@ resource "aws_db_instance" "postgresql" {
 resource "aws_security_group" "sg" {
   name        = "postgresql-${var.environment}"
   description = "Allow EKS inbound/outbound traffic"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port       = var.database_port

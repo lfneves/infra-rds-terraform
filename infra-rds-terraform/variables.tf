@@ -1,13 +1,13 @@
 variable "project" {
   default     = "delivery-rds"
   type        = string
-  description = "Name of project this VPC is meant to house"
+  description = "Name of project"
 }
 
 variable "environment" {
   default     = "delivery"
   type        = string
-  description = "Name of environment this VPC is targeting"
+  description = "Name of environment"
 }
 
 variable "allocated_storage" {
@@ -44,6 +44,10 @@ variable "vpc_id" {
   default = "vpc-0fc12eb95b6925947"
   type        = string
   description = "ID of VPC meant to house database"
+}
+
+variable "vpc_cidr_block" {
+  type = string
 }
 
 variable "database_identifier" {
@@ -201,26 +205,44 @@ variable "alarm_cpu_credit_balance_threshold" {
   description = "CPU credit balance threshold (only for db.t* instance types)"
 }
 
-# variable "alarm_actions" {
-#   default     = ""
-#   type        = list
-#   description = "List of ARNs to be notified via CloudWatch when alarm enters ALARM state"
-# }
-
-# variable "ok_actions" {
-#   default     = ""
-#   type        = list
-#   description = "List of ARNs to be notified via CloudWatch when alarm enters OK state"
-# }
-
-# variable "insufficient_data_actions" {
-#   default     = ""
-#   type        = list
-#   description = "List of ARNs to be notified via CloudWatch when alarm enters INSUFFICIENT_DATA state"
-# }
-
 variable "tags" {
   default     = {}
   type        = map(string)
   description = "Extra tags to attach to the RDS resources"
+}
+
+variable "private_network_config" {
+  type = map(object({
+      cidr_block               = string
+      az                       = string
+      associated_public_subnet = string
+      eks                      = bool
+  }))
+
+  default = {
+    "private-eks-1" = {
+        cidr_block               = "10.0.0.0/23"
+        az                       = "us-east-1a"
+        associated_public_subnet = "public-eks-1"
+        eks                      = true
+    },
+    "private-eks-2" = {
+        cidr_block               = "10.0.2.0/23"
+        az                       = "us-east-1b"
+        associated_public_subnet = "public-eks-2"
+        eks                      = true
+    },
+    "private-rds-1" = {
+        cidr_block               = "10.0.4.0/24"
+        az                       = "us-east-1a"
+        associated_public_subnet = ""
+        eks                      = false
+    },
+    "private-rds-2" = {
+        cidr_block               = "10.0.5.0/24"
+        az                       = "us-east-1b"
+        associated_public_subnet = ""
+        eks                      = false
+    }
+  }
 }
