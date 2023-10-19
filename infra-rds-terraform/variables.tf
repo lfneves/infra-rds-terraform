@@ -228,25 +228,25 @@ variable "private_network_config" {
 
   default = {
     "private-eks-1" = {
-        cidr_block               = "10.0.0.0/23"
+        cidr_block               = "10.0.0.0/24"
         az                       = "us-east-1a"
         associated_public_subnet = "public-eks-1"
         eks                      = true
     },
     "private-eks-2" = {
-        cidr_block               = "10.0.2.0/23"
+        cidr_block               = "10.0.0.0/24"
         az                       = "us-east-1b"
         associated_public_subnet = "public-eks-2"
         eks                      = true
     },
     "private-rds-1" = {
-        cidr_block               = "10.0.4.0/24"
+        cidr_block               = "10.0.0.0/24"
         az                       = "us-east-1a"
         associated_public_subnet = ""
         eks                      = false
     },
     "private-rds-2" = {
-        cidr_block               = "10.0.5.0/24"
+        cidr_block               = "10.0.0.0/24"
         az                       = "us-east-1b"
         associated_public_subnet = ""
         eks                      = false
@@ -278,25 +278,25 @@ variable "public_network_config" {
 
   default = {
     "public-eks-1" = {
-        cidr_block = "10.0.6.0/23"
+        cidr_block = "10.0.0.0/24"
         az = "us-east-1a"
         nat_gw = true
         eks = true
     },
     "public-eks-2" = {
-        cidr_block = "10.0.8.0/23"
+        cidr_block = "10.0.0.0/24"
         az = "us-east-1b"
         nat_gw = true
         eks = true
     },
     "public-rds-1" = {
-        cidr_block = "10.0.10.0/24"
+        cidr_block = "10.0.0.0/24"
         az = "us-east-1a"
         nat_gw = false
         eks = false
     },
     "public-rds-2" = {
-        cidr_block = "10.0.11.0/24"
+        cidr_block = "10.0.0.0/24"
         az = "us-east-1b"
         nat_gw = false
         eks = false
