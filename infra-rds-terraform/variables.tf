@@ -176,7 +176,7 @@ variable "security_group" {
 }
 
 variable "parameter_group" {
-  default     = "delivery"
+  default     = "postgres15"
   type        = string
   description = "Database engine parameter group"
 }

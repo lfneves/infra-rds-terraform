@@ -35,6 +35,12 @@ resource "aws_db_subnet_group" "subnet_group" {
   subnet_ids = var.subnet_group
 }
 
+resource "aws_db_parameter_group" "my_parameter_group" {
+  name        = "my-db-parameter-group"
+  family      = "postgres15"
+  description = "My DB Parameter Group"
+}
+
 # RDS instance
 resource "aws_db_instance" "postgresql" {
   allocated_storage               = var.allocated_storage
