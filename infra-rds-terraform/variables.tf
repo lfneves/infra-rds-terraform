@@ -41,14 +41,9 @@ variable "iops" {
 }
 
 variable "vpc_id" {
-  default = "vpc-0375e805d0ab38f76"
+  default = "vpc-0129e480cac825c60"
   type        = string
   description = "ID of VPC meant to house database"
-}
-
-variable "vpc_cidr_block" {
-  default = "10.0.0.0/16"
-  type = string
 }
 
 variable "database_identifier" {
@@ -169,7 +164,13 @@ variable "cloudwatch_logs_exports" {
 }
 
 variable "subnet_group" {
-  default = "delivery-subnet-group"
+  default = ["subnet-06cb61035394e9754", "subnet-0bcfa69a0c3210f6a"]
+  type        = string
+  description = "Database subnet group"
+}
+
+variable "security_group" {
+  default = ["sg-08973457d77834d9d", "sg-0fed9bd7b4e5a2af2"]
   type        = string
   description = "Database subnet group"
 }
@@ -216,104 +217,4 @@ variable "tags" {
   default     = {}
   type        = map(string)
   description = "Extra tags to attach to the RDS resources"
-}
-
-variable "private_network_config" {
-  type = map(object({
-      cidr_block               = string
-      az                       = string
-      associated_public_subnet = string
-      eks                      = bool
-  }))
-
-  default = {
-    "private-eks-1" = {
-        cidr_block               = "10.0.0.0/19"
-        az                       = "us-east-1a"
-        associated_public_subnet = "public-eks-1"
-        eks                      = true
-    },
-    "private-eks-2" = {
-        cidr_block               = "10.0.32.0/19"
-        az                       = "us-east-1b"
-        associated_public_subnet = "public-eks-2"
-        eks                      = true
-    },
-    "private-rds-1" = {
-        cidr_block               = "10.0.64.0/19"
-        az                       = "us-east-1a"
-        associated_public_subnet = ""
-        eks                      = false
-    },
-    "private-rds-2" = {
-        cidr_block               = "10.0.96.0/19"
-        az                       = "us-east-1b"
-        associated_public_subnet = ""
-        eks                      = false
-    }
-  }
-}
-
-locals {
-    private_nested_config = flatten([
-        for name, config in var.private_network_config : [
-            {
-                name                     = name
-                cidr_block               = config.cidr_block
-                az                       = config.az
-                associated_public_subnet = config.associated_public_subnet
-                eks                      = config.eks
-            }
-        ]
-    ])
-}
-
-variable "public_network_config" {
-  type = map(object({
-      cidr_block              = string
-      az                      = string
-      nat_gw                  = bool
-      eks                     = bool
-  }))
-
-  default = {
-    "public-eks-1" = {
-        cidr_block = "10.0.128.0/19"
-        az = "us-east-1a"
-        nat_gw = true
-        eks = true
-    },
-    "public-eks-2" = {
-        cidr_block = "10.0.160.0/19"
-        az = "us-east-1b"
-        nat_gw = true
-        eks = true
-    },
-    "public-rds-1" = {
-        cidr_block = "10.0.192.0/19"
-        az = "us-east-1a"
-        nat_gw = false
-        eks = false
-    },
-    "public-rds-2" = {
-        cidr_block = "10.0.224.0/19"
-        az = "us-east-1b"
-        nat_gw = false
-        eks = false
-    }
-  }
-}
-
-locals {
-    public_nested_config = flatten([
-        for name, config in var.public_network_config : [
-            {
-                name                    = name
-                cidr_block              = config.cidr_block
-                az                      = config.az
-                nat_gw                  = config.nat_gw
-                eks                     = config.eks
-            }
-        ]
-    ])
 }
