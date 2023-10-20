@@ -29,8 +29,8 @@ resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
 }
 
 resource "aws_db_subnet_group" "subnet_group" {
-  name        = "my-db-subnet-group"
-  description = "My DB subnet group"
+  name        = "subnet-group"
+  description = "DB subnet group"
 
   subnet_ids = var.subnet_group
 }
