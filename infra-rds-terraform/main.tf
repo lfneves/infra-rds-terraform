@@ -28,6 +28,12 @@ resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
 
+resource "aws_db_subnet_group" "subnet_group" {
+  name        = "my-db-subnet-group"
+  description = "My DB subnet group"
+
+  subnet_ids = var.subnet_group
+}
 
 # RDS instance
 resource "aws_db_instance" "postgresql" {
@@ -52,7 +58,7 @@ resource "aws_db_instance" "postgresql" {
   multi_az                        = var.multi_availability_zone
   port                            = var.database_port
   vpc_security_group_ids          = var.security_group
-  db_subnet_group_name            = var.subnet_group
+  db_subnet_group_name            = aws_db_subnet_group.subnet_group
   parameter_group_name            = var.parameter_group
   storage_encrypted               = var.storage_encrypted
   monitoring_interval             = var.monitoring_interval
