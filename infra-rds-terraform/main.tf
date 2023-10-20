@@ -65,7 +65,7 @@ resource "aws_db_instance" "postgresql" {
   port                            = var.database_port
   vpc_security_group_ids          = var.security_group
   db_subnet_group_name            = aws_db_subnet_group.subnet_group.name
-  parameter_group_name            = aws_db_parameter_group.rds_parameter_group
+  parameter_group_name            = aws_db_parameter_group.rds_parameter_group.name
   storage_encrypted               = var.storage_encrypted
   monitoring_interval             = var.monitoring_interval
   monitoring_role_arn             = var.create_iam_role ? aws_iam_role.enhanced_monitoring[0].arn : ""
