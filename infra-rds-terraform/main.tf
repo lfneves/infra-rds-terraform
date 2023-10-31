@@ -39,6 +39,11 @@ resource "aws_db_parameter_group" "rds_parameter_group" {
   name        = "rds-parameter-group"
   family      = "postgres15"
   description = "My DB Parameter Group"
+
+  parameter {
+    name  = "rds.force_ssl"
+    value = "0"
+  }
 }
 
 # RDS instance
