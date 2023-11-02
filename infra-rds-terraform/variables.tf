@@ -41,7 +41,7 @@ variable "iops" {
 }
 
 variable "vpc_id" {
-  default = "vpc-0976937391f3da908"
+  default = "vpc-0a3241633399bd092"
   type        = string
   description = "ID of VPC meant to house database"
 }
@@ -164,13 +164,13 @@ variable "cloudwatch_logs_exports" {
 }
 
 variable "subnet_group" {
-  default = ["subnet-0d941741a058e0f78", "subnet-033573fe81c38ad24"]
+  default = ["subnet-03012103a807df05d", "subnet-01becb9227173cd74", "subnet-0fffdf712426b99b7", "subnet-00ae1e5105c0a7d49"]
   type        = list(string)
   description = "Database subnet group"
 }
 
 variable "security_group" {
-  default = ["sg-0a26f3ae38e92c244", "sg-0d0a8186da8d3dceb"]
+  default = ["sg-090c271fbe533f090", "sg-051533b1b4a000141"]
   type        = list(string)
   description = "Database subnet group"
 }
