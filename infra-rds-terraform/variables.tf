@@ -164,7 +164,7 @@ variable "cloudwatch_logs_exports" {
 }
 
 variable "subnet_group" {
-  default = ["subnet-03012103a807df05d", "subnet-01becb9227173cd74", "subnet-0fffdf712426b99b7", "subnet-00ae1e5105c0a7d49"]
+  default = ["subnet-0fffdf712426b99b7", "subnet-00ae1e5105c0a7d49"]
   type        = list(string)
   description = "Database subnet group"
 }
