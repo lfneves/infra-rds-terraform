@@ -88,17 +88,12 @@ resource "aws_db_instance" "postgresql" {
 }
 
 resource "null_resource" "create_table" {
-  depends_on = [aws_db_instance.postgresql]
-
-  connection {
-    host     = aws_db_instance.postgresql.address
-    port     = aws_db_instance.postgresql.port
-    username = aws_db_instance.postgresql.username
-    password = aws_db_instance.postgresql.password
+triggers = {
+    instance_id = aws_db_instance.postgresql.id
   }
 
   provisioner "local-exec" {
-    command = "psql -h ${self.connection.host} -U ${self.connection.username} -d ${aws_db_instance.postgresql.name} -a -f table_schema.sql"
+    command = "psql -h ${aws_db_instance.postgresql.address} -U ${aws_db_instance.postgresql.username} -d ${aws_db_instance.postgresql.name} -a -f table_schema.sql"
   }
 }
 
