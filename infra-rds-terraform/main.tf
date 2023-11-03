@@ -93,8 +93,15 @@ resource "null_resource" "create_table" {
       instance_id = aws_db_instance.postgresql.id
   }
 
+  #provisioner "local-exec" {
+  #  command = "psql -h ${element(split(":", aws_db_instance.postgresql.endpoint), 0)} -p 5432 -U ${aws_db_instance.postgresql.username} -d ${aws_db_instance.postgresql.identifier} -a -f table_schema.sql"
+  #}
+
   provisioner "local-exec" {
-    command = "psql -h ${element(split(":", aws_db_instance.postgresql.endpoint), 0)} -p 5432 -U ${aws_db_instance.postgresql.username} -d ${aws_db_instance.postgresql.identifier} -a -f table_schema.sql"
+    command = <<-EOT
+      export PGPASSWORD=var.PGPASSWORD
+      psql -h ${element(split(":", aws_db_instance.postgresql.endpoint), 0)} -p 5432 -U ${aws_db_instance.postgresql.username} -d ${aws_db_instance.postgresql.identifier} -a -f table_schema.sql
+      unset PGPASSWORD
+    EOT
   }
 }
-
