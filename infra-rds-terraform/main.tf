@@ -93,7 +93,7 @@ resource "null_resource" "create_table" {
   }
 
   provisioner "local-exec" {
-    command = "psql -h ${aws_db_instance.postgresql.endpoint} -U ${aws_db_instance.postgresql.username} -d ${aws_db_instance.postgresql.identifier} -a -f table_schema.sql"
+    command = "psql -h ${aws_db_instance.postgresql.endpoint} -p 5432 -U ${aws_db_instance.postgresql.username} -d ${aws_db_instance.postgresql.identifier} -a -f table_schema.sql"
   }
 }
 
