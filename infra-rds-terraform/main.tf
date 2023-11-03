@@ -76,6 +76,7 @@ resource "aws_db_instance" "postgresql" {
   monitoring_role_arn             = var.create_iam_role ? aws_iam_role.enhanced_monitoring[0].arn : ""
   deletion_protection             = var.deletion_protection
   enabled_cloudwatch_logs_exports = var.cloudwatch_logs_exports
+  publicly_accessible             = true
 
   tags = merge(
     {
