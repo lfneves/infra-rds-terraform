@@ -88,8 +88,8 @@ resource "aws_db_instance" "postgresql" {
 }
 
 resource "null_resource" "create_table" {
-triggers = {
-    instance_id = aws_db_instance.postgresql.id
+  triggers = {
+      instance_id = aws_db_instance.postgresql.id
   }
 
   provisioner "local-exec" {
