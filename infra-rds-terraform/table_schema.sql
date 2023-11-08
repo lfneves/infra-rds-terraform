@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS tb_product (
     dh_insert TIMESTAMP DEFAULT NOW()
 );
 
-CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE IF NOT EXISTS tb_order (
   id                  SERIAL  PRIMARY KEY,
